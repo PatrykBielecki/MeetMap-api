@@ -41,7 +41,7 @@ public class UserService {
 
         User user = new User();
         user.setUsername(username);
-        user.setDeletionTime(LocalDateTime.now().plusMinutes(5));  // Set deletion time
+        user.setDeletionTime(LocalDateTime.now().plusMinutes(1));  // Set deletion time
 
         user = userRepository.save(user);  // Save the user
 
@@ -108,13 +108,17 @@ public class UserService {
 
         // If the user had a room, try to delete the room (RoomService checks if it's empty)
         if (room != null) {
-            roomRepository.deleteById(room.getId());  // Call RoomService to handle the room deletion
+            boolean hasUsers = roomRepository.checkIfRoomByIdHasUsersInIt(room.getId());
+
+            if (!hasUsers) {
+                roomRepository.deleteById(room.getId());
+            }
         }
     }
 
     private void startUserDeletionTimer(Long userId) {
         ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> deleteUser(userId),
-                new java.util.Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5)));
+                new java.util.Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1)));
 
         userTimers.put(userId, scheduledFuture);
     }

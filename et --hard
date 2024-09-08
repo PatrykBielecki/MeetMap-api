@@ -1,0 +1,11 @@
+[33mcommit 09111e7df2a9c2e326cab3bfe3a988e5210bd571[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev[m[33m, [m[1;31morigin/dev[m[33m)[m
+Author: Patryk Bielecki <bielecki.biz@gmail.com>
+Date:   Sun Sep 8 16:52:43 2024 +0200
+
+    Added longitude and latitude to user
+
+[33mcommit 19abe1d6e19fa7d846303d2c5e51572761269e3c[m
+Author: Patryk Bielecki <bielecki.biz@gmail.com>
+Date:   Sun Sep 8 15:27:46 2024 +0200
+
+    Initial commit
