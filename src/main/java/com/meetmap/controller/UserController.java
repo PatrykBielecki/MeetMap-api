@@ -1,5 +1,7 @@
 package com.meetmap.controller;
 
+import com.meetmap.dto.RoomRequest;
+import com.meetmap.model.Room;
 import com.meetmap.model.User;
 import com.meetmap.dto.UserRequest;
 import com.meetmap.service.UserService;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -81,5 +84,38 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PatchMapping("/{userId}/location")
+    public ResponseEntity<RoomRequest> updateUserLocation(
+            @PathVariable Long userId,
+            @RequestBody LocationUpdateDTO locationUpdateDTO) {
+
+        RoomRequest roomRequest = userService.updateUserLocation(userId, locationUpdateDTO.getLongitude(),
+                locationUpdateDTO.getLatitude());
+
+        return ResponseEntity.ok(roomRequest);
+    }
+}
+
+// Define the DTO for request body with longitude and latitude
+class LocationUpdateDTO {
+    private Double longitude;
+    private Double latitude;
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }

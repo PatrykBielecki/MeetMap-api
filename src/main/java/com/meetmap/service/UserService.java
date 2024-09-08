@@ -1,5 +1,7 @@
 package com.meetmap.service;
 
+import com.meetmap.dto.RoomRequest;
+import com.meetmap.dto.UserRequest;
 import com.meetmap.model.Room;
 import com.meetmap.model.User;
 import com.meetmap.repository.RoomRepository;
@@ -14,6 +16,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.hibernate.Hibernate;
 
 @Service
 public class UserService {
@@ -42,6 +47,27 @@ public class UserService {
 
         startUserDeletionTimer(user.getId());  // Start the deletion timer
         return user;
+    }
+
+    public RoomRequest updateUserLocation(Long userId, Double longitude, Double latitude) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setLongitude(longitude);
+        user.setLatitude(latitude);
+        userRepository.save(user);
+
+        Room room = user.getRoom();
+        if (room == null) {
+            throw new RuntimeException("User is not assigned to any room");
+        }
+
+        // Convert the Room and Users into DTOs
+        List<UserRequest> userDTOs = room.getUsers().stream()
+                .map(u -> new UserRequest(u.getId(), u.getUsername(), u.getLongitude(), u.getLatitude()))
+                .collect(Collectors.toList());
+
+        return new RoomRequest(room.getId(), room.getRoomId(), userDTOs);
     }
 
     public void refreshUserDeletionTimer(Long userId) {
