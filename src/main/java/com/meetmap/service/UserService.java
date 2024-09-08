@@ -41,7 +41,7 @@ public class UserService {
 
         User user = new User();
         user.setUsername(username);
-        user.setDeletionTime(LocalDateTime.now().plusMinutes(1));  // Set deletion time
+        user.setDeletionTime(LocalDateTime.now().plusMinutes(5));  // Set deletion time
 
         user = userRepository.save(user);  // Save the user
 
@@ -118,7 +118,7 @@ public class UserService {
 
     private void startUserDeletionTimer(Long userId) {
         ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> deleteUser(userId),
-                new java.util.Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1)));
+                new java.util.Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5)));
 
         userTimers.put(userId, scheduledFuture);
     }
